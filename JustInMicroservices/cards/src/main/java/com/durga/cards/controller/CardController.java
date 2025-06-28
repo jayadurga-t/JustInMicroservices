@@ -4,20 +4,24 @@ import com.durga.cards.constants.CardConstants;
 import com.durga.cards.dto.CardDto;
 import com.durga.cards.dto.ResponseDto;
 import com.durga.cards.serviceInt.ICardService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
+@Validated
 public class CardController {
 
     private ICardService iCardService;
 
     @PostMapping("/createCard")
-    public ResponseEntity<ResponseDto> createCard(@RequestParam String mobileNumber){
+    public ResponseEntity<ResponseDto> createCard(@RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
         iCardService.createCard(mobileNumber);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -25,7 +29,7 @@ public class CardController {
     }
 
     @GetMapping("/fetchCard")
-    public ResponseEntity<ResponseDto> fetchCard(@RequestParam String mobileNumber){
+    public ResponseEntity<ResponseDto> fetchCard(@RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
         iCardService.fetchCard(mobileNumber);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -33,7 +37,7 @@ public class CardController {
     }
 
     @PutMapping("/updateCard")
-    public ResponseEntity<ResponseDto> updateCard(@RequestBody CardDto cardDto){
+    public ResponseEntity<ResponseDto> updateCard(@Valid @RequestBody CardDto cardDto){
         boolean isUpdated=iCardService.updateCard(cardDto);
         if(isUpdated){
             return ResponseEntity
@@ -47,7 +51,7 @@ public class CardController {
     }
 
     @DeleteMapping("/deleteCard")
-    public ResponseEntity<ResponseDto> deleteCard(@RequestParam String mobileNumber){
+    public ResponseEntity<ResponseDto> deleteCard(@RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
         boolean isDeleted=iCardService.deleteCard(mobileNumber);
         if(isDeleted){
             return ResponseEntity

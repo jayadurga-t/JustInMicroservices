@@ -4,20 +4,24 @@ import com.durga.loans.constants.LoanConstants;
 import com.durga.loans.dto.LoanDto;
 import com.durga.loans.dto.ResponseDto;
 import com.durga.loans.serviceInt.ILoanService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api")
+@Validated
 public class LoanController {
 
     private ILoanService iLoanService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseDto> createLoan(@RequestParam String mobileNumber){
+    public ResponseEntity<ResponseDto> createLoan(@RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
         iLoanService.createLoan(mobileNumber);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -25,7 +29,7 @@ public class LoanController {
     }
 
     @GetMapping("/fetch")
-    public ResponseEntity<ResponseDto> fetchLoan(@RequestParam String mobileNumber){
+    public ResponseEntity<ResponseDto> fetchLoan(@RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
         iLoanService.fetchLoan(mobileNumber);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -33,7 +37,7 @@ public class LoanController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseDto> updateLoan(@RequestBody LoanDto loanDto){
+    public ResponseEntity<ResponseDto> updateLoan(@Valid @RequestBody LoanDto loanDto){
         boolean isUpdated = iLoanService.updateLoan(loanDto);
         if(isUpdated){
             return ResponseEntity
@@ -47,7 +51,7 @@ public class LoanController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<ResponseDto> deleteLoan(@RequestParam String mobileNumber){
+    public ResponseEntity<ResponseDto> deleteLoan(@RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
         boolean isdeleted = iLoanService.deleteLoan(mobileNumber);
         if(isdeleted){
             return ResponseEntity
